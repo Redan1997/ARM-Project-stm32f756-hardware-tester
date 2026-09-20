@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "crc.h"
 #include "dma.h"
 #include "eth.h"
 #include "i2c.h"
@@ -99,7 +100,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_ETH_Init();
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   MX_SPI1_Init();
@@ -110,6 +110,8 @@ int main(void)
   MX_I2C2_Init();
   MX_UART4_Init();
   MX_USART6_UART_Init();
+  MX_CRC_Init();
+  MX_ETH_Init();
   /* USER CODE BEGIN 2 */
   user_main();
   /* USER CODE END 2 */
