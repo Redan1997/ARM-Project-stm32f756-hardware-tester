@@ -1,4 +1,4 @@
-/*
+/**
  * @file	test_config.h
  * @Author: Redan Created on: 20 בספט׳ 2026
  * @brief   Central configuration for peripheral hardware verification tests.

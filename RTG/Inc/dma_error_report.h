@@ -1,4 +1,4 @@
-/*
+/**
  * @file    dma_error_report.h
  * @brief   single, peripheral DMA error report for failure handling
  *
@@ -9,10 +9,10 @@
 #include "main.h"
 
 typedef enum{
-    UART,
-    SPI,
-    I2C,
-    ADc
+	UART,
+	SPI,
+	I2C,
+	ADc
 }TYPE_DMA_PERIPHERAL;
 
 /**
