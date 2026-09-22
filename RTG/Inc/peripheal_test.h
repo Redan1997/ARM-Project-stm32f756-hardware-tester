@@ -39,23 +39,23 @@ uint8_t I2C_test_loopback(uint8_t *data, uint16_t length, uint8_t iterations);
  */
 uint8_t SPI_test_loopback(uint8_t *data, uint16_t length, uint8_t iterations);
 
-uint8_t SPI_test_loopback(uint8_t *data, uint16_t length, uint8_t iterations);
-
 /**
- * @brief Verifies ADC1 against the chip's factory-calibrated internal
- *        VREFINT channel - no external wiring required.
- * @param data       Unused (kept for uniform dispatch signature).
- * @param length     Unused (kept for uniform dispatch signature).
+ * @brief   verfication of the ADC1 against the chip's factory-calibrated internal VREFINT channel
+            VREFINT is a stable voltage reference that can be used to verify the ADC's accuracy
+            the test reads the VREFINT channel multiple times and compares the result against the expected value(from datasheets reference voltage),
+            allowing for a small tolerance. conversion tolerance for ADC tests, in raw 12-bit ADC LSBs.
  * @param iterations Number of conversions to check.
  * @return TEST_RESULT_SUCCESS (0x01) or TEST_RESULT_FAILURE (0xFF).
  */
 uint8_t ADC_test(uint8_t *data, uint16_t length, uint8_t iterations);
 
 /**
- * @brief Verifies TIM2 counts at the expected rate, checked against
- *        SysTick (an independent clock path) - no external wiring required.
- * @param data       Unused (kept for uniform dispatch signature).
- * @param length     Unused (kept for uniform dispatch signature).
+ * @brief Verifies TIM2 by free-running it as a counter and checking it
+ *        counts at the expected rate over a known real-time window,
+ *        measured via HAL_GetTick() (SysTick - an independent clock
+ *        path from TIM2). No external wiring needed: a misconfigured
+ *        prescaler or a dead timer block shows up as a count far outside
+ *        the expected value for the elapsed wall-clock time.
  * @param iterations Number of timing windows to check.
  * @return TEST_RESULT_SUCCESS (0x01) or TEST_RESULT_FAILURE (0xFF).
  */

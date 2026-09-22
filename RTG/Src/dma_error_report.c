@@ -5,7 +5,6 @@
  */
 
 #include "dma_error_report.h"
-#include "user.h"
 #include <stdio.h>
 
 void report_dma_error(HAL_StatusTypeDef const status, TYPE_DMA_PERIPHERAL type, uint32_t const error_code)

@@ -18,6 +18,25 @@
 /** @brief Max time to wait for a DMA-complete callback before declaring a timeout failure. */
 #define TEST_TIMEOUT_MS         1000
 
+/** @brief Conversion tolerance for ADC tests */
+#define ADC_TOLERANCE 20
+
 /** @brief Data length above which CRC-32 compare replaces byte-by-byte compare . */
 #define CRC_COMPARE_THRESHOLD   100
+
+/** @brief APB1 timer clock feeding TIM2, per .ioc RCC.APB1TimFreq_Value. */
+#define TIM2_INPUT_CLOCK_HZ     108000000
+
+/** @brief TIM2 prescaler register value, per .ioc TIM2.Prescaler. */
+#define TIM2_PSC                107
+
+/** @brief TIM2's actual counting rate: input clock / (PSC + 1). */
+#define TIM2_CLOCK_HZ           (TIM2_INPUT_CLOCK_HZ / (TIM2_PSC + 1))
+
+/** @brief Real-time window sampled per iteration, in milliseconds. */
+#define TIMER_TEST_WINDOW_MS    100
+
+/** @brief Allowed deviation from the expected count, as a percentage. */
+#define TIMER_TOLERANCE_PCT     2
+
 #endif /* INC_TEST_CONFIG_H_ */

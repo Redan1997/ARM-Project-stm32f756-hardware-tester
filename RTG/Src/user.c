@@ -34,17 +34,29 @@ void user_main(void){
 		HAL_UART_Transmit(&huart3, (uint8_t*)"I2C Test Failed\n", 17, HAL_MAX_DELAY);
 	}
 	result = ADC_test(NULL, 0, 1);
-		if(result == 0x01){
-			HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test Passed\r\n", 18, HAL_MAX_DELAY);
-		}else{
-			HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test Failed\n", 17, HAL_MAX_DELAY);
-		}
-		result = ADC_test(NULL, 0, 5);
-			if(result == 0x01){
-				HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test 2 Passed\r\n", 18, HAL_MAX_DELAY);
-			}else{
-				HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test 2 Failed\n", 17, HAL_MAX_DELAY);
-			}
+	if(result == 0x01){
+		HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test Passed\r\n", 18, HAL_MAX_DELAY);
+	}else{
+		HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test Failed\n", 17, HAL_MAX_DELAY);
+	}
+	result = ADC_test(NULL, 0, 5);
+	if(result == 0x01){
+		HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test 2 Passed\r\n", 18, HAL_MAX_DELAY);
+	}else{
+		HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test 2 Failed\n", 17, HAL_MAX_DELAY);
+	}
+	result = Timer_test(NULL, 0, 1);
+	if(result == 0x01){
+		HAL_UART_Transmit(&huart3, (uint8_t*)"timer Test Passed\r\n", 18, HAL_MAX_DELAY);
+	}else{
+		HAL_UART_Transmit(&huart3, (uint8_t*)"timer Test Failed\n", 17, HAL_MAX_DELAY);
+	}
+	result = Timer_test(NULL, 0, 5);
+	if(result == 0x01){
+		HAL_UART_Transmit(&huart3, (uint8_t*)"timer Test 2 Passed\r\n", 18, HAL_MAX_DELAY);
+	}else{
+		HAL_UART_Transmit(&huart3, (uint8_t*)"timer Test 2 Failed\n", 17, HAL_MAX_DELAY);
+	}
 }
 
 
