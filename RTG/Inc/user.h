@@ -18,4 +18,5 @@
 /*UPDATE IN CORE SRC MAIN.c it user.h*/
 /*add path to inc in userFOLDER*/
 void user_main(void);
+void user_loop();
 #endif /* INC_USER_H_ */

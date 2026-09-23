@@ -5,61 +5,31 @@
  *      Author: Redan
  *
  */
-#include "main.h"
 #include "user.h"
+#include "main.h"
+#include "lwip/netif.h"
+#include "ip_addr.h"
+#include "udp_config.h"
 #include <stdio.h>
-#include "tim.h"
-#include <string.h>
-#include "peripheal_test.h"
-void user_main(void){
-	/*CALLED FROM CORE/SRC/MAIN.c*/
-	HAL_UART_Transmit(&huart3, (uint8_t*)"\033[2J\033[H", 7, HAL_MAX_DELAY);//clean terminal
-	uint8_t sample_data[] = "TEST_PATTERNTEST_PATTERNTEST_PATTERNTEST_PATTERNTEST_PATTERNTEST_PATTERNTEST_PATTERNTEST_PATTERNTEST_PATTERNTEST_PATTERN";
-	uint8_t result = UART_test_loopback(sample_data, strlen((char*)sample_data), 5);
-	if(result == 0x01){
-		HAL_UART_Transmit(&huart3, (uint8_t*)"UART Test Passed\r\n", 18, HAL_MAX_DELAY);
-	}else{
-		HAL_UART_Transmit(&huart3, (uint8_t*)"UART Test Failed\n", 17, HAL_MAX_DELAY);
-	}
-	result =SPI_test_loopback(sample_data, (uint16_t)strlen((char*)sample_data), 5);
-	if(result == 0x01){
-		HAL_UART_Transmit(&huart3, (uint8_t*)"SPI Test Passed\r\n", 18, HAL_MAX_DELAY);
-	}else{
-		HAL_UART_Transmit(&huart3, (uint8_t*)"SPI Test Failed\n", 17, HAL_MAX_DELAY);
-	}
-	result = I2C_test_loopback(sample_data, strlen((char*)sample_data), 5);
-	if(result == 0x01){
-		HAL_UART_Transmit(&huart3, (uint8_t*)"I2C Test Passed\r\n", 18, HAL_MAX_DELAY);
-	}else{
-		HAL_UART_Transmit(&huart3, (uint8_t*)"I2C Test Failed\n", 17, HAL_MAX_DELAY);
-	}
-	result = ADC_test(NULL, 0, 1);
-	if(result == 0x01){
-		HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test Passed\r\n", 18, HAL_MAX_DELAY);
-	}else{
-		HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test Failed\n", 17, HAL_MAX_DELAY);
-	}
-	result = ADC_test(NULL, 0, 5);
-	if(result == 0x01){
-		HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test 2 Passed\r\n", 18, HAL_MAX_DELAY);
-	}else{
-		HAL_UART_Transmit(&huart3, (uint8_t*)"ADC Test 2 Failed\n", 17, HAL_MAX_DELAY);
-	}
-	result = Timer_test(NULL, 0, 1);
-	if(result == 0x01){
-		HAL_UART_Transmit(&huart3, (uint8_t*)"timer Test Passed\r\n", 18, HAL_MAX_DELAY);
-	}else{
-		HAL_UART_Transmit(&huart3, (uint8_t*)"timer Test Failed\n", 17, HAL_MAX_DELAY);
-	}
-	result = Timer_test(NULL, 0, 5);
-	if(result == 0x01){
-		HAL_UART_Transmit(&huart3, (uint8_t*)"timer Test 2 Passed\r\n", 18, HAL_MAX_DELAY);
-	}else{
-		HAL_UART_Transmit(&huart3, (uint8_t*)"timer Test 2 Failed\n", 17, HAL_MAX_DELAY);
-	}
+
+extern struct netif gnetif;
+static uint8_t ip_printed = 0;
+
+void user_main(void)
+{
+	printf("\033[2J\033[H");
+	printf("=== LwIP Network Initialization ===\r\n");
+	printf("Waiting for network connection and IP assignment...\r\n");
+	udp_test_server_init();
 }
 
-
-
-
-
+void user_loop(void)
+{
+	if (!ip_printed && netif_is_up(&gnetif) && gnetif.ip_addr.addr != 0) {
+		printf("\r\nNetwork Connected Successfully!\r\n");
+		printf("IP Address : %s\r\n", ip4addr_ntoa(netif_ip4_addr(&gnetif)));
+		printf("Netmask    : %s\r\n", ip4addr_ntoa(netif_ip4_netmask(&gnetif)));
+		printf("Gateway    : %s\r\n", ip4addr_ntoa(netif_ip4_gw(&gnetif)));
+		ip_printed = 1;
+	}
+}

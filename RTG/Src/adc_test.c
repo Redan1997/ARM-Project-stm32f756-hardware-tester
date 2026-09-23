@@ -14,7 +14,7 @@
 static volatile uint8_t adc_conv_done = 0;
 
 uint8_t ADC_test(uint8_t *data, uint16_t length, uint8_t iterations) {
-    uint16_t vrefint_cal = *VREFINT_CAL_ADDR;
+    uint16_t vrefint_cal = *VREFINT_CAL_ADDR;/*((uint16_t*) (0x1FF0F44A))*/
     uint32_t adc_value;
     HAL_StatusTypeDef status;
 
