@@ -89,25 +89,82 @@ Wire colors in the photo: **blue** = UART, **orange** = I2C, **yellow** = SPI. T
 
 The UART, SPI and I2C pin assignments are also in the header comment of each test source file.
 
-## Build and flash the firmware
+## Installation
 
-1. Open STM32CubeIDE and choose **File → Import → Existing Projects into Workspace**, then select the repository root.
-2. Build the project (`RTG/Inc` is already on the include path).
-3. Flash the board over ST-LINK.
-4. Open a serial terminal on the ST-LINK virtual COM port (**USART3, 115200**). The board prints its IP address once DHCP completes.
+### 1. Firmware
+
+1. Download the project: on the GitHub page click **Code → Download ZIP**, then extract the ZIP.
+2. Open STM32CubeIDE, choose **File → Import → Existing Projects into Workspace** and select the extracted project folder (the one containing the `.ioc` file).
+3. Build the project (`RTG/Inc` is already on the include path).
+4. Connect the board's ST-LINK USB port and the Ethernet cable, fit the jumpers from [Hardware setup](#hardware-setup), then flash with **Run**.
+5. Open a serial terminal on the ST-LINK virtual COM port (**USART3, 115200**). Once DHCP completes the board prints its address:
+
+```
+Network Connected Successfully!
+IP Address : <board IP>
+Netmask    : <netmask>
+Gateway    : <gateway>
+```
 
 On boot the firmware initializes lwIP and the UDP server, then keeps servicing the network from the main loop.
 
-## Build and run the client
+### 2. Linux client
+
+On Debian/Ubuntu, install the toolchain once:
+
+```bash
+sudo apt install build-essential
+```
+
+The client only needs the `C-client` folder. Download and extract the ZIP on the Linux machine (or copy that folder there), then build and run it:
 
 ```bash
 cd C-client
 make
-./uut_tester                 # finds the board automatically
-./uut_tester 192.168.1.50    # or give the board's IP explicitly
+./uut_tester
 ```
 
-If no IP is given, the client broadcasts a small probe and uses the address of the board that replies. The last IP used is cached in `last_uut_ip.txt` and used as a fallback if discovery gets no reply.
+The client saves `test_records.csv` and `last_uut_ip.txt` in the **directory you run it from**. Run it from the same folder each time, or your records end up split across several folders.
+
+## Uninstall
+
+**Client**
+
+```bash
+make clean                             # removes the build output in C-client/
+```
+
+The data files stay where you ran the client; delete them if you no longer want the history:
+
+```bash
+rm test_records.csv last_uut_ip.txt
+```
+
+deleting the extracted project folder removes everything.
+
+**Firmware**
+
+- To wipe the board, erase the flash with STM32CubeProgrammer (**Erase chip**) or flash any other program over it.
+- To remove the project, delete it from the STM32CubeIDE workspace and delete the extracted project folder.
+- Take the loopback jumper wires off the headers.
+
+## Usage
+
+### Quick start
+
+1. Fit the jumpers, connect Ethernet and the ST-LINK USB cable, and power the board.
+2. Wait for `Network Connected Successfully!` on the serial terminal.
+3. Start the client with `./uut_tester`. It finds the board by itself.
+4. Type `all` to run every peripheral test.
+5. Type `list` to see the results. Every result is also saved in `test_records.csv`.
+
+### Connecting to the board
+
+If no IP is given, the client broadcasts a small probe and uses the address of the board that replies. The last IP used is cached in `last_uut_ip.txt` and used as a fallback if discovery gets no reply. To skip discovery, pass the address from the serial console:
+
+```bash
+./uut_tester 192.168.1.50
+```
 
 ![Building the client and discovering the board](photos/pic.png)
 
@@ -125,13 +182,41 @@ If no IP is given, the client broadcasts a small probe and uses the address of t
 
 Running every test with `all`, a single Timer test with 50 iterations, and `all` again after raising the default with `iter 10`:
 
-![Running all tests, a single timer test, and changing the default iterations](photos/pic3.png)
+![Running all tests, a single timer test, and changing the default iterations](photos/pic2.png)
 
 Listing the saved records with `list` and inspecting one with `show 11`:
 
 ![Listing saved records and showing one](photos/pic3.png)
 
 Records are appended to `test_records.csv` as `test_id,timestamp,peripheral,duration_seconds,result`, so they persist between runs. Test IDs continue from the highest ID already on file.
+
+### Common tasks
+
+| I want to...                          | Type                                |
+| ------------------------------------- | ----------------------------------- |
+| Run everything once                   | `all`                               |
+| Run one test with a chosen pattern    | `run uart 20 HelloWorld`            |
+| Run one test with no data pattern     | `run timer 10` or `run adc 10`      |
+| Change how many iterations `all` uses | `iter 10`, then `all`               |
+| Review results                        | `list`, or `show <test_id>` for one |
+| Start with a clean history            | `empty`                             |
+
+- UART, SPI and I2C need a pattern. The pattern can be up to 255 bytes and its case is kept exactly as typed. With no pattern the board reports success without running a transfer. `all` uses a built-in 31-byte pattern for these three tests.
+- Timer and ADC ignore the pattern.
+- The Timer test takes about 100 ms per iteration, so `run timer 255` takes roughly 25 seconds.
+- The recorded duration is the time from sending the command to receiving the result.
+- `test_records.csv` is plain CSV, so you can open it in a spreadsheet.
+
+### Troubleshooting
+
+| Symptom                                      | Check                                                                                                                                    |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Client says discovery got no reply and exits | PC and board must be on the same subnet. Read the board's IP from the serial console and run `./uut_tester <ip>`.                        |
+| `No response within timeout.`                | Confirm the IP, that both sides use UDP port 1997, and that the board is running (press reset). The attempt is still saved as a FAILURE. |
+| A UART, SPI or I2C test returns FAILURE      | Check the jumpers against the [wiring table](#wiring).                                                                                   |
+| An ADC or Timer test returns FAILURE         | Check the constants in `RTG/Inc/test_config.h` against the clock and peripheral settings in the `.ioc`.                                  |
+| Serial terminal shows nothing                | Select the ST-LINK virtual COM port at 115200 baud.                                                                                      |
+| `make: gcc: command not found`               | Install the toolchain: `sudo apt install build-essential`.                                                                               |
 
 ## What each test does
 
@@ -175,7 +260,7 @@ Only the 7 fixed bytes plus `pattern_length` bytes are sent on the wire. Packets
 ├── Drivers/         STM32 HAL / CMSIS
 ├── LWIP/            lwIP application and target glue (CubeMX)
 ├── Middlewares/     lwIP middleware
-├── photos
+├── photos           Photo and screenshots used in this README
 │   ├── nu756zg.jpg
 │   ├── pic.png
 │   ├── pic2.png
