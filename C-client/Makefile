@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -O2
-SRCS = main.c udp_client.c record_store.c protocol.c
+SRCS = main.c udp_client.c record_store.c protocol.c discovery.c
 OBJS = $(SRCS:.c=.o)
 TARGET = uut_tester
 

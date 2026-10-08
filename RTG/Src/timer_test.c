@@ -14,7 +14,13 @@
 
 uint8_t Timer_test(uint8_t *data, uint16_t length, uint8_t iterations)
 {
-
+	/* Mark unused parameters to maintain a uniform signature without compiler warnings */
+	(void)data;
+	(void)length;
+	//SUCCESS here does not mean the peripheral was verified working nothing was tested so nothing failed
+	if (iterations == 0) {
+		return TEST_RESULT_SUCCESS;
+	}
 	uint32_t expected = (uint32_t)(((uint64_t)TIM2_CLOCK_HZ * TIMER_TEST_WINDOW_MS) / 1000U);
 	uint32_t max_diff = (expected * TIMER_TOLERANCE_PCT) / 100U;
 

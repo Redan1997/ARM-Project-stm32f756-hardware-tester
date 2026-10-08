@@ -1,5 +1,7 @@
 /**
  * @file    record_store.h
+ * @author: Redan
+ * @date:   30 בספט׳ 2026
  * @brief   Persistent (filesystem-backed) storage for test records, per
  *          spec: TEST-ID, date/time sent, test length in seconds, result.
  *          Stored as CSV so records survive across program runs and can
@@ -17,16 +19,16 @@
 
 /** @brief One persisted test record. */
 typedef struct {
-    uint32_t test_id;
-    char     timestamp[TIMESTAMP_LEN];      /*local time the test was sent*/
-    char     peripheral_name[PERIPHERAL_NAME_LEN];
-    double   duration_seconds;              /*time from send to response*/
-    int      success;                       /*1 = SUCCESS, 0 = FAILURE */
+	uint32_t test_id;
+	char     timestamp[TIMESTAMP_LEN];      /*local time the test was sent*/
+	char     peripheral_name[PERIPHERAL_NAME_LEN];
+	double   duration_seconds;              /*time from send to response*/
+	int      success;                       /*1 = SUCCESS, 0 = FAILURE */
 } TestRecord;
 
 /** @brief Handle for a CSV-backed record file. */
 typedef struct {
-    char file_path[FILE_PATH_LEN];
+	char file_path[FILE_PATH_LEN];
 } RecordStore;
 
 /**

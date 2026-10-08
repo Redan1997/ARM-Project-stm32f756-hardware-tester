@@ -35,12 +35,12 @@ void report_dma_error(HAL_StatusTypeDef const status, TYPE_DMA_PERIPHERAL type, 
 
 	switch (type) {
 	case UART:
-	    if (error_code & HAL_UART_ERROR_ORE) printf("-> Overrun\r\n");
-	    if (error_code & HAL_UART_ERROR_FE)  printf("-> Framing error\r\n");
-	    if (error_code & HAL_UART_ERROR_NE)  printf("-> Noise error\r\n");
-	    if (error_code & HAL_UART_ERROR_PE)  printf("-> Parity error\r\n");
-	    if (error_code & HAL_UART_ERROR_DMA) printf("-> DMA error\r\n");
-	    break;
+		if (error_code & HAL_UART_ERROR_ORE) printf("-> Overrun\r\n");
+		if (error_code & HAL_UART_ERROR_FE)  printf("-> Framing error\r\n");
+		if (error_code & HAL_UART_ERROR_NE)  printf("-> Noise error\r\n");
+		if (error_code & HAL_UART_ERROR_PE)  printf("-> Parity error\r\n");
+		if (error_code & HAL_UART_ERROR_DMA) printf("-> DMA error\r\n");
+		break;
 	case SPI:
 		if (error_code & HAL_SPI_ERROR_OVR)  printf("-> Overrun\r\n");
 		if (error_code & HAL_SPI_ERROR_MODF) printf("-> Mode Fault\r\n");
@@ -54,9 +54,9 @@ void report_dma_error(HAL_StatusTypeDef const status, TYPE_DMA_PERIPHERAL type, 
 		if (error_code & HAL_I2C_ERROR_OVR)   printf("-> Overrun/Underrun\r\n");
 		if (error_code & HAL_I2C_ERROR_DMA)   printf("-> DMA error\r\n");
 		break;
-    case ADc:
-        if (error_code & HAL_ADC_ERROR_OVR)   printf("-> Overrun\r\n");
-        if (error_code & HAL_ADC_ERROR_DMA)   printf("-> DMA error\r\n");
-        break;
+	case ADc:
+		if (error_code & HAL_ADC_ERROR_OVR)   printf("-> Overrun\r\n");
+		if (error_code & HAL_ADC_ERROR_DMA)   printf("-> DMA error\r\n");
+		break;
 	}
 }

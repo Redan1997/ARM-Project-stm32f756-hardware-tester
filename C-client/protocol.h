@@ -1,5 +1,7 @@
 /**
  * @file    protocol.h
+ * @author: Redan
+ * @date:   30 בספט׳ 2026
  * @brief   structures for the proprietary UDP test protocol,
  *          mirroring the UUT's test_protocol.h exactly. Field order,
  *          sizes, and packing must match the firmware side byte-for-byte.
@@ -31,17 +33,17 @@
  *        are actually placed on the wire ,not the full 256-byte array.
  */
 typedef struct __attribute__((packed)) {
-    uint32_t test_id;
-    uint8_t  peripheral;
-    uint8_t  iterations;
-    uint8_t  pattern_length;
-    uint8_t  bit_pattern[MAX_PATTERN_LEN];
+	uint32_t test_id;
+	uint8_t  peripheral;
+	uint8_t  iterations;
+	uint8_t  pattern_length;
+	uint8_t  bit_pattern[MAX_PATTERN_LEN];
 } TestHeader;
 
 /** @brief Result packet received from the UUT. */
 typedef struct __attribute__((packed)) {
-    uint32_t test_id;
-    uint8_t  test_result;
+	uint32_t test_id;
+	uint8_t  test_result;
 } ResultPacket;
 
 /**

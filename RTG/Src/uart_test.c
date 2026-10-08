@@ -2,7 +2,7 @@
  * @file uart_test.c
  * @author: Redan
  * @date: 20 בספט׳ 2026
- * @brief implementation of the UART loopback test function, using DMA for both master and slave transfers.	
+ * @brief implementation of the UART loopback test function, using DMA for both master and slave transfers.
  * @GPIO: uart4: PC10(TX), PC11(RX) - Asynchronous baud rate 115200, 8bit data frame, 1 stop bit, no parity
  *        usart6: PC6(TX), PC7(RX) - Asynchronous baud rate 115200, 8bit data frame, 1 stop bit, no parity
  */
@@ -19,6 +19,10 @@ static volatile uint8_t flagUART4=0;
 static volatile uint8_t flagUART6=0;
 
 uint8_t UART_test_loopback(uint8_t *data, uint16_t length, uint8_t iterations){
+	//SUCCESS here does not mean the peripheral was verified working nothing was tested so nothing failed
+	if (iterations == 0 || length == 0|| data == NULL) {
+		return TEST_RESULT_SUCCESS;
+	}
 	static uint8_t rx_buffer_x[TEST_MAX_PATTERN_LEN];
 	static uint8_t rx_buffer_y[TEST_MAX_PATTERN_LEN];
 	HAL_StatusTypeDef status;

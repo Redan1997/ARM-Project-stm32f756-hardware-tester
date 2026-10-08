@@ -48,7 +48,8 @@ static void udp_test_recv_callback(void *arg, struct udp_pcb *pcb, struct pbuf *
 	if (p == NULL) {
 		return;
 	}
-	if (p->tot_len < sizeof(TestHeader_t) - TEST_MAX_PATTERN_LEN) {// ensure the packet is large enough to contain the header
+	const size_t fixed_len = sizeof(TestHeader_t) - TEST_MAX_PATTERN_LEN; /* 7 bytes */
+	if (p->tot_len < fixed_len) {// ensure the packet is large enough to contain the fixed header
 		pbuf_free(p);
 		return;
 	}
@@ -56,7 +57,16 @@ static void udp_test_recv_callback(void *arg, struct udp_pcb *pcb, struct pbuf *
 	static TestHeader_t header;
 	memset(&header, 0, sizeof(TestHeader_t));
 
-	pbuf_copy_partial(p, &header, p->tot_len,0);// copy the entire packet into the header structure
+	/* Read just the fixed fields first - this also tells us pattern_length,
+	 * which we need before we know how many more bytes to expect/copy. */
+	pbuf_copy_partial(p, &header, fixed_len, 0);
+	size_t expected_total = fixed_len + header.pattern_length;
+	if (p->tot_len < expected_total) {
+		pbuf_free(p);
+		return;
+	}
+	/* Copy exactly pattern_length bytes (max 255)*/
+	pbuf_copy_partial(p, header.bit_pattern, header.pattern_length, fixed_len);
 	/*test start*/
 	uint8_t result = dispatch_test(header.peripheral, header.bit_pattern,header.pattern_length, header.iterations);
 

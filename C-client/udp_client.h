@@ -1,5 +1,7 @@
 /**
  * @file    udp_client.h
+ * @author: Redan
+ * @date:   30 בספט׳ 2026
  * @brief   UDP client: sends a TestHeader command to the UUT
  *          and blocks (with timeout) for a ResultPacket response.
  */
@@ -13,8 +15,8 @@
 
 /** @brief Holds one UDP socket bound to talk to one UUT. */
 typedef struct {
-    int sock_fd;
-    struct sockaddr_in uut_addr;
+	int sock_fd;
+	struct sockaddr_in uut_addr;
 } UdpClient;
 
 /**
@@ -39,6 +41,6 @@ void udp_client_close(UdpClient *client);
  * @return              1 if a response was received before the timeout, 0 otherwise.
  */
 int udp_client_send_and_wait(UdpClient *client, const TestHeader *cmd, size_t cmd_size,
-                              int timeout_ms, ResultPacket *response);
+		int timeout_ms, ResultPacket *response);
 
 #endif /* UDP_CLIENT_H_ */

@@ -20,6 +20,10 @@ static volatile uint8_t flagSPI4=0;
 static volatile uint8_t flagSPI1=0;
 uint8_t SPI_test_loopback(uint8_t *data, uint16_t length, uint8_t iterations)
 {
+	//SUCCESS here does not mean the peripheral was verified working nothing was tested so nothing failed
+	if (iterations == 0 || length == 0|| data == NULL) {
+		return TEST_RESULT_SUCCESS;
+	}
 	static uint8_t rx_buffer_x[TEST_MAX_PATTERN_LEN];
 	static uint8_t rx_buffer_y[TEST_MAX_PATTERN_LEN];
 	HAL_StatusTypeDef status;
